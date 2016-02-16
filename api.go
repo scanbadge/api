@@ -6,7 +6,7 @@ import (
 )
 
 //R is gin-gonic's engine used for controlling gin
-var R *gin.Engine
+var r *gin.Engine
 
 //AuthRequired is middleware to protect routes from unauthorized users
 func AuthRequired() gin.HandlerFunc {
@@ -23,21 +23,21 @@ func AuthRequired() gin.HandlerFunc {
 }
 
 func setupRouter() {
-	R = gin.Default()
-	R.LoadHTMLGlob("templates/*")
-	R.Static("/static", "static")
+	r = gin.Default()
+	r.LoadHTMLGlob("templates/*")
+	r.Static("/static", "static")
 
-	R.GET("/", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.tmpl", nil)
 	})
 
-	//validationGroup := R.Group("/verify", AuthRequired()) uncomment if this needs to be protected
-	validationGroup := R.Group("/verify")
+	//validationGroup := r.Group("/verify", AuthRequired()) uncomment if this needs to be protected
+	validationGroup := r.Group("/verify")
 	{
 		validationGroup.GET("/:door/:id", verifyTag)
 	}
 
-	R.Run("127.0.0.1:4700")
+	r.Run("127.0.0.1:4700")
 }
 
 func main() {

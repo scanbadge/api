@@ -1,13 +1,3 @@
-/**
- * ScanBadge example config
- *
- * TODO for user:
- * - Add the missing MySQL details
- * - Edit applicable values to match your current MySQL configuration
- * - Rename this file to config.json
- * - Move this to the directory of your current ScanBadge application.
- *
- **/
 {
   "ServerAddress": "localhost",
   "ServerPort": 8080,

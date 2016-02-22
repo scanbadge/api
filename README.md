@@ -6,4 +6,4 @@ This API is written in Go.
 ## Links
 - [Project website](https://scanbadge.xyz/)
 - [Full documentation](https://scanbadge.xyz/documentation)
-- [Coding style rules](https://scanbadge.xyz/documentation/coding-style#C)
+- [Coding style rules](https://golang.org/doc/effective_go.html#formatting)

@@ -10,17 +10,17 @@ var Config Configuration
 
 // Configuration stores the main configuration for the application.
 type Configuration struct {
-	ServerAddress              string
-	ServerPort                 int
-	Database                   MySQLConfiguration
+	ServerAddress string
+	ServerPort    int
+	Database      MySQLConfiguration
 }
 
 // MySQLConfiguration stores the specific MySQL configuration for this application.
 type MySQLConfiguration struct {
-	Username		 string
+	Username     string
 	Password     string
 	DatabaseName string
-	Protocol 		 string
+	Protocol     string
 	Host         string
 	Port         string
 	Engine       string

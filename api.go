@@ -5,18 +5,15 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-gorp/gorp"
-	_ "github.com/go-sql-driver/mysql" // implement MySQL SQL driver
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/devices"
 	"log"
 	"strconv"
 )
 
-var dbmap *gorp.DbMap
-
 func main() {
 	configuration.Read()
-	dbmap = initDb()
+	configuration.Dbmap = initDb()
 	router := gin.Default()
 
 	v1 := router.Group("api/v1")
@@ -47,13 +44,13 @@ func initDb() *gorp.DbMap {
 
 	checkErr(err, "Cannot open connection to database")
 
-	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{Engine: configuration.Config.Database.Engine, Encoding: configuration.Config.Database.Encoding}}
+	Dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{Engine: configuration.Config.Database.Engine, Encoding: configuration.Config.Database.Encoding}}
 
-	dbmap.AddTableWithName(devices.Device{}, "Device").SetKeys(true, "ID")
-	err = dbmap.CreateTablesIfNotExists()
+	Dbmap.AddTableWithName(devices.Device{}, "devices").SetKeys(true, "ID")
+	err = Dbmap.CreateTablesIfNotExists()
 	checkErr(err, "Creating table failed")
 
-	return dbmap
+	return Dbmap
 }
 
 func checkErr(err error, msg string) {

@@ -2,11 +2,16 @@ package configuration
 
 import (
 	"encoding/json"
+	"github.com/go-gorp/gorp"
+	_ "github.com/go-sql-driver/mysql" // implement MySQL SQL driver
 	"io/ioutil"
 )
 
 // Config returns the current configuration settings.
 var Config Configuration
+
+// Dbmap contains a pointer to the gorp.DpMap
+var Dbmap *gorp.DbMap
 
 // Configuration stores the main configuration for the application.
 type Configuration struct {

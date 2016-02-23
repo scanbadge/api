@@ -2,7 +2,8 @@ package devices
 
 import (
 	"github.com/gin-gonic/gin"
-	"strconv"
+	_ "github.com/go-sql-driver/mysql" // implement MySQL SQL driver
+	"github.com/scanbadge/api/configuration"
 )
 
 // Device describes a device. Uses mapping for database and json.
@@ -14,52 +15,59 @@ type Device struct {
 
 // GetDevices gets all devices.
 func GetDevices(c *gin.Context) {
-	type Devices []Device
+	var devices []Device
+	_, err := configuration.Dbmap.Select(&devices, "select * from devices")
 
-	var devices = Devices{
-		Device{ID: 1, Name: "Arduino 1", Key: "1234"},
-		Device{ID: 2, Name: "Arduino 2", Key: "1234"},
+	if err == nil {
+		c.JSON(200, devices)
+	} else {
+		c.JSON(404, gin.H{"error": "no device(s) found"})
 	}
-
-	c.JSON(200, devices)
 }
 
-// GetDevice gets a device based on the identifier.
+// GetDevice gets a device based on the provided identifier.
 func GetDevice(c *gin.Context) {
 	id := c.Params.ByName("id")
+	var device Device
+	err := configuration.Dbmap.SelectOne(&device, "select * from devices where id=?", id)
 
-	userID, _ := strconv.ParseInt(id, 0, 64)
-
-	switch userID {
-	case 1:
-		{
-			content := gin.H{"id": userID, "name": "Arduino 1", "key": "1234"}
-			c.JSON(200, content)
-		}
-	case 2:
-		{
-			content := gin.H{"id": userID, "name": "Arduino 2", "key": "1234"}
-			c.JSON(200, content)
-		}
-	default:
-		{
-			content := gin.H{"error": "Device not found"}
-			c.JSON(404, content)
-		}
+	if err == nil {
+		c.JSON(200, device)
+	} else {
+		c.JSON(404, gin.H{"error": "device not found"})
 	}
 }
 
 // AddDevice adds a new device.
 func AddDevice(c *gin.Context) {
-	// To be implemented.
+	var device Device
+	err := c.BindJSON(&device)
+
+	if err == nil {
+		if device.Key != "" && device.Name != "" {
+			err := configuration.Dbmap.Insert(&device)
+
+			if err == nil {
+				c.JSON(201, device)
+			} else {
+				// err.Error() should be removed as soon as we have implemented better error handling when adding resources to API.
+				c.JSON(400, gin.H{"error": "Adding new device failed due to " + err.Error()})
+			}
+		} else {
+			c.JSON(422, gin.H{"error": "field(s) are empty"})
+		}
+	} else {
+		// err.Error() should be removed as soon as we have implemented better error handling when adding resources to API.
+		c.JSON(400, gin.H{"error": "Adding new device failed due to " + err.Error()})
+	}
 }
 
 // UpdateDevice updates a device based on the identifer.
 func UpdateDevice(c *gin.Context) {
-	// To be implemented.
+	c.JSON(403, gin.H{"error": "PUT is not supported"})
 }
 
 // DeleteDevice deletes a device based on the identifier.
 func DeleteDevice(c *gin.Context) {
-	// To be implemented.
+	c.JSON(403, gin.H{"error": "DELETE is not supported"})
 }

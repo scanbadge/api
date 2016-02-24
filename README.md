@@ -13,9 +13,7 @@ This API is written in Go.
   - Rename `config.example.json` to `config.json`
   - Move `config.json` to the directory of your current ScanBadge application (e.g. `$GOPATH/bin/`).
 - Use `cd $GOPATH/bin && ./api` to run ScanBadge API.
-- If applicable, Gorp will automatically create empty tables in the selected database.
-- ???
-- Profit! :)
+- Gorp will automatically create empty tables in the selected database.
 
 ## Links
 - [Project website](https://scanbadge.xyz/)

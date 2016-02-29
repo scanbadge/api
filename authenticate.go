@@ -50,7 +50,7 @@ func Authenticate(c *gin.Context) {
 				// Passwords match. Generate new JWT.
 				//
 				token, err := generateToken(selectedUser)
-				if err == nil {
+				if err == nil && token != "" {
 					c.JSON(200, gin.H{"token": token})
 				} else {
 					c.JSON(401, gin.H{"error": "cannot generate token, verify if the correct key is used"})

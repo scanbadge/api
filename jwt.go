@@ -55,7 +55,7 @@ func generateToken(user users.User) (string, error) {
 		tokenString, err := token.SignedString(key)
 
 		if err != nil {
-			log.Println("Cannot create signed string for new JWT", err)
+			return "", fmt.Errorf("Cannot create signed string for new JWT: %s", err)
 		}
 
 		return tokenString, nil
@@ -71,7 +71,13 @@ func lookupKey(kind interface{}) (interface{}, error) {
 			cfile := configuration.Config.Key
 
 			if cfile != "" {
-				return utility.ReadData(configuration.Config.Key)
+				f, err := utility.ReadData(configuration.Config.Key)
+
+				if err != nil {
+					return nil, err
+				}
+
+				return utility.DecodeBase64(f)
 			}
 
 			break

@@ -51,7 +51,7 @@ func initDb() *gorp.DbMap {
 	Dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{Engine: configuration.Config.Database.Engine, Encoding: configuration.Config.Database.Encoding}}
 
 	Dbmap.AddTableWithName(devices.Device{}, "devices").SetKeys(true, "ID")
-	Dbmap.AddTableWithName(users.User{}, "users").SetKeys(true, "ID").SetUniqueTogether("Username", "Email")
+	Dbmap.AddTableWithName(users.User{}, "users").SetKeys(true, "ID").SetUniqueTogether("username", "email")
 	err = Dbmap.CreateTablesIfNotExists()
 	checkErr("Creating table failed", err)
 

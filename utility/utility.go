@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"encoding/base64"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
@@ -13,6 +14,18 @@ func ReadData(filename string) ([]byte, error) {
 	}
 
 	return ioutil.ReadFile(filename)
+}
+
+// DecodeBase64 decodes the provided encoded base64 bytes.
+func DecodeBase64(encoded []byte) ([]byte, error) {
+	// Perhaps it's better to not cast it, but I could not get base64.StdEncoding.Decode to work... :(
+	decoded, err := base64.StdEncoding.DecodeString(string(encoded))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return decoded, nil
 }
 
 // HashPassword hashes a password with the bcrypt algorithm using a cost of 10.

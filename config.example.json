@@ -1,6 +1,7 @@
 {
-  "ServerAddress": "localhost",
+  "ServerHost": "localhost",
   "ServerPort": 8080,
+  "Key": "",
   "Database": {
     "Username": "",
     "Password": "",
@@ -8,6 +9,7 @@
     "Protocol": "tcp",
     "Host": "localhost",
     "Port": "3306",
+    "Charset": "utf8mb4,utf8",
     "Engine": "InnoDB",
     "Encoding": "UTF8"
   }

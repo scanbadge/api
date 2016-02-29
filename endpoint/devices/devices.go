@@ -2,7 +2,7 @@ package devices
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql" // implement MySQL SQL driver
+	_ "github.com/go-sql-driver/mysql" // implement MySQL driver
 	"github.com/scanbadge/api/configuration"
 )
 
@@ -50,14 +50,16 @@ func AddDevice(c *gin.Context) {
 			if err == nil {
 				c.JSON(201, device)
 			} else {
-				// err.Error() should be removed as soon as we have implemented better error handling when adding resources to API.
+				// err.Error() should be removed as soon as we have implemented
+				// better error handling when adding resources to API.
 				c.JSON(400, gin.H{"error": "Adding new device failed due to " + err.Error()})
 			}
 		} else {
 			c.JSON(422, gin.H{"error": "field(s) are empty"})
 		}
 	} else {
-		// err.Error() should be removed as soon as we have implemented better error handling when adding resources to API.
+		// err.Error() should be removed as soon as we have implemented
+		// better error handling when adding resources to API.
 		c.JSON(400, gin.H{"error": "Adding new device failed due to " + err.Error()})
 	}
 }

@@ -15,21 +15,23 @@ var Dbmap *gorp.DbMap
 
 // Configuration stores the main configuration for the application.
 type Configuration struct {
-	ServerAddress string
-	ServerPort    int
-	Database      MySQLConfiguration
+	ServerHost string // The hostname on which the HTTP server will run, e.g. 'localhost'.
+	ServerPort int    // The port on which the HTTP server will run, e.g. '8080'.
+	Key        string // The relative path of the hex-encoded key used for signing JWT. The key must be at least 256 bits in length.
+	Database   MySQLConfiguration
 }
 
 // MySQLConfiguration stores the specific MySQL configuration for this application.
 type MySQLConfiguration struct {
-	Username     string
-	Password     string
-	DatabaseName string
-	Protocol     string
-	Host         string
-	Port         string
-	Engine       string
-	Encoding     string
+	Username     string // The username of the MySQL user.
+	Password     string // The password of the MySQL user.
+	DatabaseName string // The MySQL database to use.
+	Protocol     string // The protocol to use to connect to the MySQL server, either 'tcp' or 'udp'.
+	Host         string // The host to use to connect to the MySQL server, e.g. 'localhost'.
+	Port         string // The port to use to connect to the MySQL server, e.g. '3306'.
+	Charset      string // The charset to use for connection string, e.g. 'utf8mb4,utf8'.
+	Engine       string // The database engine of the MySQL server, e.g. 'InnoDB'.
+	Encoding     string // The encoding used on the MySQL server, e.g. 'UTF8'.
 }
 
 // Read reads the configuration file and parses it. If any errors are found, a panic will occur.

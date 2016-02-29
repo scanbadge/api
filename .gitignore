@@ -1,2 +1,3 @@
 # Exclude configuration file.
 /config.json
+/key/test.key

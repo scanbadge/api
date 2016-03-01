@@ -8,13 +8,14 @@ import (
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/endpoint/devices"
 	"github.com/scanbadge/api/endpoint/users"
-	"log"
 	"strconv"
 )
 
 func main() {
+	fmt.Println("[Scanbadge] Starting ScanBadge API...")
 	configuration.Read()
 	configuration.Dbmap = initDb()
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	v1 := router.Group("api/v1", AuthRequired())
@@ -27,10 +28,18 @@ func main() {
 		v1.POST("/devices", devices.AddDevice)
 		v1.PUT("/devices/:id", devices.UpdateDevice)
 		v1.DELETE("/devices/:id", devices.DeleteDevice)
+		// Users
+		v1.GET("/users", users.GetUsers)
+		v1.GET("/users/:id", users.GetUser)
+		v1.POST("/users", users.AddUser)
+		v1.PUT("/users/:id", users.UpdateUser)
+		v1.DELETE("/users/:id", users.DeleteUser)
 	}
 
 	// By default, gin will listen 'n serve on localhost:8080. Edit config.json to apply changes.
-	router.Run(fmt.Sprintf("%s:%s", configuration.Config.ServerHost, strconv.Itoa(configuration.Config.ServerPort)))
+	host := fmt.Sprintf("%s:%s", configuration.Config.ServerHost, strconv.Itoa(configuration.Config.ServerPort))
+	fmt.Println(fmt.Sprintf("[ScanBadge] Running and serving HTTP on %s", host))
+	router.Run(host)
 }
 
 func initDb() *gorp.DbMap {
@@ -60,6 +69,6 @@ func initDb() *gorp.DbMap {
 
 func checkErr(msg string, err error) {
 	if err != nil {
-		log.Println(msg, err)
+		fmt.Println(msg, err)
 	}
 }

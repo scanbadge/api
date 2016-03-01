@@ -6,14 +6,13 @@ import (
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/endpoint/users"
 	"github.com/scanbadge/api/utility"
-	"log"
 	"time"
 )
 
 func isValidToken(encodedToken string) (success bool) {
 	// If we do not check for an empty token, the token parsing will fail.
 	if encodedToken == "" {
-		log.Println(fmt.Errorf("Provided token is empty"))
+		fmt.Println(fmt.Errorf("Provided token is empty"))
 		return false
 	}
 

@@ -28,13 +28,18 @@ func GetDevices(c *gin.Context) {
 // GetDevice gets a device based on the provided identifier.
 func GetDevice(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var device Device
-	err := configuration.Dbmap.SelectOne(&device, "select * from devices where id=?", id)
 
-	if err == nil {
-		c.JSON(200, device)
+	if id != "" {
+		var device Device
+		err := configuration.Dbmap.SelectOne(&device, "select * from devices where id=?", id)
+
+		if err == nil {
+			c.JSON(200, device)
+		} else {
+			c.JSON(404, gin.H{"error": "device not found"})
+		}
 	} else {
-		c.JSON(404, gin.H{"error": "device not found"})
+		c.JSON(422, gin.H{"error": "no identifier provided"})
 	}
 }
 

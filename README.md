@@ -34,21 +34,21 @@ Until we have implemented a proper way of configuring a first user, you must cre
 
 1. Generate a bcrypt hash of your desired password:
 	```
-package main
+	package main
 
-import (
-	"fmt"
-	"golang.org/x/crypto/bcrypt"
-)
+	import (
+		"fmt"
+		"golang.org/x/crypto/bcrypt"
+	)
 
-func main() {
-	hash, err := bcrypt.GenerateFromPassword([]byte("yourpassword"), bcrypt.DefaultCost)
+	func main() {
+		hash, err := bcrypt.GenerateFromPassword([]byte("yourpassword"), bcrypt.DefaultCost)
 
-	if(err != nil) {
-		panic(err)
+		if(err != nil) {
+			panic(err)
+		}
+		fmt.Println(string(hash))
 	}
-	fmt.Println(string(hash))
-}
 	```
 - Connect to your MySQL database.
 - Insert a new user by using this query (replace appropriate values):

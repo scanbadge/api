@@ -13,7 +13,7 @@ This API is written in Go.
   - Edit applicable values to match your current MySQL configuration
   - Add the **relative path** to the key file, e.g. if the key is stored in `/etc/ssl/private/scanbadge.key` and your application runs from `/home/user/go/bin/`, use `../../../etc/ssl/private/scanbadge.key`.
   - Rename `config.example.json` to `config.json`.
-  - - Move `config.json` to the directory of your current ScanBadge application (e.g. `$GOPATH/bin/`).
+  - Move `config.json` to the directory of your current ScanBadge application (e.g. `$GOPATH/bin/`).
 - Use `cd $GOPATH/bin && ./api` to run ScanBadge API.
 - Gorp will automatically create empty tables in the selected database.
 

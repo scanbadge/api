@@ -23,8 +23,9 @@ This API is written in Go.
 
 Yes, we have. Our API is RESTful, so endpoints support `GET`,`PUT`,`POST`,`DELETE` requests. The following endpoints are currently implemented:
 
-- `/users`
+- `/auth`
 - `/devices`
+- `/users`
 
 See the [API documentation](https://scanbadge.xyz/documentation/api#endpoints) for more detailed information about our endpoints.
 

@@ -30,8 +30,14 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	if *debug {
+		fmt.Println("Initializing gin...")
+	}
 	router := gin.New()
 
+	if *debug {
+		fmt.Println("Configuring gin router...")
+	}
 	router.POST("/auth", authentication.Authenticate)
 
 	authorized := router.Group("/", authentication.AuthRequired())
@@ -74,7 +80,9 @@ func initDb() *gorp.DbMap {
 
 	db, err := sql.Open("mysql", dsn)
 
-	checkErr("Cannot open connection to database", err)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	Dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{Engine: configuration.Config.Database.Engine, Encoding: configuration.Config.Database.Encoding}}
 
@@ -82,7 +90,10 @@ func initDb() *gorp.DbMap {
 	Dbmap.AddTableWithName(logs.Log{}, "logs").SetKeys(true, "ID")
 	Dbmap.AddTableWithName(users.User{}, "users").SetKeys(true, "ID").SetUniqueTogether("username", "email")
 	err = Dbmap.CreateTablesIfNotExists()
-	checkErr("Creating table failed", err)
+
+	if err != nil {
+		panic(err.Error())
+	}
 
 	return Dbmap
 }

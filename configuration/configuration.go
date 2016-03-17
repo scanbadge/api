@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-gorp/gorp"
 	"github.com/scanbadge/api/utility"
 	"io/ioutil"
@@ -51,24 +52,24 @@ func Read() {
 }
 
 // ReadKey reads the key used for JWT authenticating.
-func ReadKey() error {
+func ReadKey() {
 	cfile := Config.Key
 
 	if cfile != "" {
 		f, err := utility.ReadData(Config.Key)
 
 		if err != nil {
-			return err
+			panic(err.Error())
 		}
 
 		db, err := utility.DecodeBase64(f)
 
 		if err != nil {
-			return err
+			panic(err.Error())
 		}
 
 		JwtKey = db
+	} else {
+		panic(fmt.Errorf("cannot read key, because its value is not set in configuration file"))
 	}
-
-	return nil
 }

@@ -1,21 +1,37 @@
-# Introduction
-API for initiating, maintaining and authenticating [ScanBadge](https://scanbadge.xyz/discover).
-
-This API is written in Go.
+# ScanBadge API
+REST API for initiating, maintaining and authenticating [ScanBadge](https://scanbadge.xyz/discover), written in Go.
 
 ## Setup
 
 1. `go get github.com/scanbadge/api`
 - `go install github.com/scanbadge/api`
 - Create a new key for creating/verifying JWT, e.g. `openssl rand -out $GOPATH/bin/scanbadge.key -base64 256`
-- Edit the `config.example.json` file as following:
-  - Add the missing MySQL details (`Username`,`Password`,`DatabaseName`)
-  - Edit applicable values to match your current MySQL configuration
-  - Add the **relative path** to the key file, e.g. if the key is stored in `/etc/ssl/private/scanbadge.key` and your application runs from `/home/user/go/bin/`, use `../../../etc/ssl/private/scanbadge.key`.
-  - Rename `config.example.json` to `config.json`.
-  - Move `config.json` to the directory of your current ScanBadge application (e.g. `$GOPATH/bin/`).
-- Use `cd $GOPATH/bin && ./api` to run ScanBadge API.
+- Add and edit the `config.json` to `$GOPATH/bin/config.json`.
+- Use cd $GOPATH/bin && ./api to run ScanBadge API.
 - Gorp will automatically create empty tables in the selected database.
+- Add [the first API user](#how-do-i-create-the-first-api-user).
+
+## Sample configuration
+
+#### config.json
+```
+{
+  "ServerHost": "localhost",
+  "ServerPort": 8080,
+  "Key": "scanbadge.key",
+  "Database": {
+    "Username": "username",
+    "Password": "password",
+    "DatabaseName": "scanbadge",
+    "Protocol": "tcp",
+    "Host": "localhost",
+    "Port": "3306",
+    "Charset": "utf8mb4,utf8",
+    "Engine": "InnoDB",
+    "Encoding": "UTF8"
+  }
+}
+```
 
 ## FAQ
 
@@ -25,6 +41,7 @@ Yes, we have. Our API is RESTful, so endpoints support `GET`,`PUT`,`POST`,`DELET
 
 - `/auth`
 - `/devices`
+- `/logging`
 - `/users`
 
 See the [API documentation](https://scanbadge.xyz/documentation/api#endpoints) for more detailed information about our endpoints.

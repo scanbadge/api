@@ -7,7 +7,7 @@ REST API for initiating, maintaining and authenticating [ScanBadge](https://scan
 - `go install github.com/scanbadge/api`
 - Create a new key for creating/verifying JWT, e.g. `openssl rand -out $GOPATH/bin/scanbadge.key -base64 256`
 - Add and edit the `config.json` to `$GOPATH/bin/config.json`.
-- Use cd $GOPATH/bin && ./api to run ScanBadge API.
+- Use `cd $GOPATH/bin && ./api` to run ScanBadge API.
 - Gorp will automatically create empty tables in the selected database.
 - Add [the first API user](#how-do-i-create-the-first-api-user).
 

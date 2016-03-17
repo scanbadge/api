@@ -6,14 +6,15 @@ import (
 	_ "github.com/go-sql-driver/mysql" // implement MySQL driver
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/utility"
+	"log"
 )
 
 // User describes a user. Uses mapping for database and json.
 type User struct {
 	ID        int64  `db:"id" json:"id"`
 	Username  string `db:"username" json:"username"`
-	Email     string `db:"email" json:"email"`
-	Password  string `db:"password" json:"password"`
+	Email     string `db:"email" json:"email,omitempty"`
+	Password  string `db:"password" json:"password,omitempty"`
 	Firstname string `db:"firstname" json:"firstname"`
 	Lastname  string `db:"lastname" json:"lastname"`
 	IsAdmin   bool   `db:"admin" json:"admin"`
@@ -22,12 +23,12 @@ type User struct {
 // GetUsers gets all users.
 func GetUsers(c *gin.Context) {
 	var users []User
-	_, err := configuration.Dbmap.Select(&users, "select id,username,email,firstname,lastname,admin from users")
+	_, err := configuration.Dbmap.Select(&users, "select id,username,firstname,lastname,admin from users")
 
-	if err == nil {
+	if err == nil && len(users) > 0 {
 		c.JSON(200, users)
 	} else {
-		fmt.Println("error when selecting users from database:", err)
+		log.Println("error when selecting users from database:", err)
 		c.JSON(404, gin.H{"error": "no user(s) found"})
 	}
 }
@@ -38,7 +39,7 @@ func GetUser(c *gin.Context) {
 
 	if id != "" {
 		var user User
-		err := configuration.Dbmap.SelectOne(&user, "select id,username,email,firstname,lastname,admin from users where id=?", id)
+		err := configuration.Dbmap.SelectOne(&user, "select id,username,firstname,lastname,admin from users where id=?", id)
 
 		if err == nil {
 			c.JSON(200, user)
@@ -56,7 +57,7 @@ func AddUser(c *gin.Context) {
 	err := c.BindJSON(&user)
 
 	if err == nil {
-		if user.Username != "" && user.Email != "" && user.Password != "" && user.Firstname != "" && user.Lastname != "" {
+		if user.Username != "" && user.Email != "" && user.Password != "" && user.Firstname != "" && user.Lastname != "" && !user.IsAdmin {
 			if len(user.Password) >= 12 {
 				// Always hash the password when saving to the database.
 				user.Password = utility.HashPassword(user.Password)
@@ -76,7 +77,7 @@ func AddUser(c *gin.Context) {
 			c.JSON(422, gin.H{"error": "field(s) are empty"})
 		}
 	} else {
-		fmt.Println("adding new user failed", err)
+		log.Println("adding new user failed", err)
 		c.JSON(400, gin.H{"error": "adding new user failed"})
 	}
 }

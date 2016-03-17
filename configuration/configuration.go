@@ -3,12 +3,15 @@ package configuration
 import (
 	"encoding/json"
 	"github.com/go-gorp/gorp"
-	_ "github.com/go-sql-driver/mysql" // implement MySQL SQL driver
+	"github.com/scanbadge/api/utility"
 	"io/ioutil"
 )
 
-// Config returns the current configuration settings.
+// Config contains the current configuration settings.
 var Config Configuration
+
+// JwtKey contains the key used for signing and verifying a JWT with HS256.
+var JwtKey []byte
 
 // Dbmap contains a pointer to the gorp.DpMap
 var Dbmap *gorp.DbMap
@@ -17,7 +20,7 @@ var Dbmap *gorp.DbMap
 type Configuration struct {
 	ServerHost string // The hostname on which the HTTP server will run, e.g. 'localhost'.
 	ServerPort int    // The port on which the HTTP server will run, e.g. '8080'.
-	Key        string // The relative path of the hex-encoded key used for signing JWT. The key must be at least 256 bits in length.
+	Key        string // The relative path of the base64-encoded key used for signing JWT. Recommended size of key: 256 bits.
 	Database   MySQLConfiguration
 }
 
@@ -45,4 +48,27 @@ func Read() {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+// ReadKey reads the key used for JWT authenticating.
+func ReadKey() error {
+	cfile := Config.Key
+
+	if cfile != "" {
+		f, err := utility.ReadData(Config.Key)
+
+		if err != nil {
+			return err
+		}
+
+		db, err := utility.DecodeBase64(f)
+
+		if err != nil {
+			return err
+		}
+
+		JwtKey = db
+	}
+
+	return nil
 }

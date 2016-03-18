@@ -5,12 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-gorp/gorp"
 	"github.com/scanbadge/api/authentication"
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/endpoint/devices"
 	"github.com/scanbadge/api/endpoint/logs"
 	"github.com/scanbadge/api/endpoint/users"
+	"gopkg.in/gorp.v1"
 	"log"
 	"strconv"
 )
@@ -30,14 +30,8 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	if *debug {
-		fmt.Println("Initializing gin...")
-	}
 	router := gin.New()
 
-	if *debug {
-		fmt.Println("Configuring gin router...")
-	}
 	router.POST("/auth", authentication.Authenticate)
 
 	authorized := router.Group("/", authentication.AuthRequired())

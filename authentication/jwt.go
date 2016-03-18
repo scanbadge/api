@@ -21,7 +21,7 @@ func GetUserID(c *gin.Context) (int64, error) {
 
 	if err == nil {
 		if token.Valid {
-			id := token.Claims["id"].(float64)
+			id := token.Claims["id"].(float64) // Required to prevent runtime panic due to wrong type assertion
 
 			return int64(id), nil
 		}

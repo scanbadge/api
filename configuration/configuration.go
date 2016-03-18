@@ -3,8 +3,8 @@ package configuration
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-gorp/gorp"
 	"github.com/scanbadge/api/utility"
+	"gopkg.in/gorp.v1"
 	"io/ioutil"
 )
 

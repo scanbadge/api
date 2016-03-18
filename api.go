@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql" // implement MySQL driver
 	"github.com/scanbadge/api/authentication"
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/endpoint/devices"

@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql" // implement MySQL driver
 	"github.com/scanbadge/api/configuration"
 	"github.com/scanbadge/api/utility"
 	"log"

@@ -3,18 +3,19 @@ package configuration
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+
 	"github.com/scanbadge/api/utility"
 	"gopkg.in/gorp.v1"
-	"io/ioutil"
 )
 
 // Config contains the current configuration settings.
 var Config Configuration
 
-// JwtKey contains the key used for signing and verifying a JWT with HS256.
+// JwtKey contains the key used for signing and verifying a JWT using HMAC SHA-256.
 var JwtKey []byte
 
-// Dbmap contains a pointer to the gorp.DpMap
+// Dbmap contains database mapping required to use gorp.
 var Dbmap *gorp.DbMap
 
 // Configuration stores the main configuration for the application.
@@ -51,24 +52,22 @@ func Read() {
 	}
 }
 
-// ReadKey reads the key used for JWT authenticating.
+// ReadKey reads the key used for authenticating JWT.
 func ReadKey() {
 	cfile := Config.Key
 
 	if cfile != "" {
 		f, err := utility.ReadData(Config.Key)
-
 		if err != nil {
 			panic(err.Error())
 		}
 
-		db, err := utility.DecodeBase64(f)
-
+		d, err := utility.DecodeBase64(f)
 		if err != nil {
 			panic(err.Error())
 		}
 
-		JwtKey = db
+		JwtKey = d
 	} else {
 		panic(fmt.Errorf("cannot read key, because its value is not set in configuration file"))
 	}

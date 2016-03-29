@@ -1,11 +1,13 @@
-package logs
+package endpoints
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql" // implement MySQL driver
 	"github.com/scanbadge/api/authentication"
 	"github.com/scanbadge/api/configuration"
+	"github.com/scanbadge/api/models"
 )
 
 // Log describes a log entry. Uses mapping for database and json.
@@ -18,20 +20,18 @@ type Log struct {
 
 // GetLogs gets all devices.
 func GetLogs(c *gin.Context) {
-	var logs []Log
+	var logs []models.Log
 	uid, err := authentication.GetUserID(c)
 
 	if err == nil {
 		_, err := configuration.Dbmap.Select(&logs, "select * from logs where user_id=?", uid)
 
 		if err == nil && len(logs) > 0 {
-			c.JSON(200, logs)
-		} else {
-			c.JSON(404, gin.H{"error": "no log entries found"})
+			showResult(c, 200, logs)
 		}
-	} else {
-		c.JSON(404, gin.H{"error": "no log entries found"})
 	}
+
+	showError(c, 404, fmt.Errorf("no log entries found"))
 }
 
 // GetLog gets a device based on the provided identifier.
@@ -39,7 +39,7 @@ func GetLog(c *gin.Context) {
 	id := c.Params.ByName("id")
 
 	if id != "" {
-		var log Log
+		var log models.Log
 		uid, err := authentication.GetUserID(c)
 
 		if err == nil {
@@ -60,11 +60,11 @@ func GetLog(c *gin.Context) {
 
 // AddLog adds a new log entry for the current user.
 func AddLog(c *gin.Context) {
-	var log Log
-	err := c.BindJSON(&log)
+	var log models.Log
+	err := c.Bind(&log)
 
 	if err == nil {
-		if log.Message != "" && log.Origin != "" {
+		if log.Type != "" && log.Description != "" && log.Origin != "" && log.Object != "" {
 			uid, err := authentication.GetUserID(c)
 
 			if err == nil {
@@ -72,26 +72,22 @@ func AddLog(c *gin.Context) {
 				err := configuration.Dbmap.Insert(&log)
 
 				if err == nil {
-					c.JSON(201, log)
-				} else {
-					c.JSON(400, gin.H{"error": "adding new log entry failed due to " + err.Error()})
+					showResult(c, 201, log)
 				}
-			} else {
-				c.JSON(400, gin.H{"error": "adding new log entry failed"})
 			}
-		} else {
-			c.JSON(422, gin.H{"error": "field(s) are empty"})
+
+			showError(c, 400, fmt.Errorf("adding new log entry failed"))
 		}
-	} else {
-		// err.Error() should be removed as soon as we have implemented
-		// better error handling when adding resources to API.
-		c.JSON(400, gin.H{"error": fmt.Sprintf("adding new log entry failed due to %s", err.Error())})
+
+		showError(c, 422, fmt.Errorf("field(s) are empty"))
 	}
+
+	showError(c, 400, fmt.Errorf("adding new log entry failed"))
 }
 
 // UpdateLog updates a device based on the identifer.
 func UpdateLog(c *gin.Context) {
-	c.JSON(403, gin.H{"error": "PUT /logs for is not supported yet"})
+	c.JSON(403, gin.H{"error": "PUT /logs is not supported yet"})
 }
 
 // DeleteLog deletes a device based on the identifier.
@@ -99,7 +95,7 @@ func DeleteLog(c *gin.Context) {
 	id := c.Params.ByName("id")
 
 	if id != "" {
-		var log Log
+		var log models.Log
 		err := c.BindJSON(&log)
 
 		if err == nil {
@@ -110,17 +106,13 @@ func DeleteLog(c *gin.Context) {
 				count, err := configuration.Dbmap.Delete(&log)
 
 				if err == nil && count == 1 {
-					c.JSON(200, gin.H{"success": fmt.Sprintf("log entry with id %s is deleted", id)})
-				} else {
-					c.JSON(400, gin.H{"error": "deleting log entry failed"})
+					showSucces(c, fmt.Sprintf("log entry with id %s is deleted", id))
 				}
-			} else {
-				c.JSON(400, gin.H{"error": fmt.Sprintf("deleting log entry failed due to %s", err.Error())})
 			}
-		} else {
-			c.JSON(400, gin.H{"error": fmt.Sprintf("deleting log entry failed due to %s", err.Error())})
 		}
-	} else {
-		c.JSON(400, gin.H{"error": "deleting log entry failed due to missing identifier"})
+
+		showError(c, 400, fmt.Errorf("deleting log entry failed"))
 	}
+
+	showError(c, 400, fmt.Errorf("deleting log entry failed due to missing identifier"))
 }

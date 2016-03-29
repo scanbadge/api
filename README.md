@@ -3,18 +3,18 @@ REST API for initiating, maintaining and authenticating [ScanBadge](https://scan
 
 ## Setup
 
-1. `go get github.com/scanbadge/api`
-- `go install github.com/scanbadge/api`
-- Create a new key for creating/verifying JWT, e.g. `openssl rand -out $GOPATH/bin/scanbadge.key -base64 256`
+1. `$ go get -u github.com/scanbadge/api`
+- `$ go install github.com/scanbadge/api`
+- Create a new key for creating/verifying JWT, e.g. `$ openssl rand -out $GOPATH/bin/scanbadge.key -base64 256`
 - Add and edit the `config.json` to `$GOPATH/bin/config.json`.
-- Use `cd $GOPATH/bin && ./api` to run ScanBadge API.
+- Use `$ cd $GOPATH/bin && ./api` to run ScanBadge API.
 - Gorp will automatically create empty tables in the selected database.
 - Add [the first API user](#how-do-i-create-the-first-api-user).
 
 ## Sample configuration
 
 #### config.json
-```
+```json
 {
   "ServerHost": "localhost",
   "ServerPort": 8080,
@@ -39,42 +39,26 @@ REST API for initiating, maintaining and authenticating [ScanBadge](https://scan
 
 Yes, we have. Our API is RESTful, so endpoints support `GET`,`PUT`,`POST`,`DELETE` requests. The following endpoints are currently implemented:
 
-- `/auth`
+- `/auth`<sup>1</sup>
 - `/devices`
 - `/logging`
 - `/users`
+
+*<sup>1</sup> only `POST` requests supported*
 
 See the [API documentation](https://scanbadge.xyz/documentation/api#endpoints) for more detailed information about our endpoints.
 
 ### How do I create the first API user?
 
-Until we have implemented a proper way of configuring a first user, you must create the first user manually. This can be done using the following steps:
+Run API with flag `-add-user`, e.g. `$ ./api -add-user`. The following information is required:
 
-1. Generate a bcrypt hash of your desired password:
-	```
-	package main
+1. Username
+- Password
+- Email
+- First name
+- Last name
 
-	import (
-		"fmt"
-		"golang.org/x/crypto/bcrypt"
-	)
-
-	func main() {
-		hash, err := bcrypt.GenerateFromPassword([]byte("yourpassword"), bcrypt.DefaultCost)
-
-		if(err != nil) {
-			panic(err)
-		}
-		fmt.Println(string(hash))
-	}
-	```
-- Connect to your MySQL database.
-- Insert a new user by using this query (replace appropriate values):
-
-  ```
-insert into users (`username`,`email`,`password`,`firstname`,`lastname`,`admin`)
-values ('john','john.doe@example.org','the generated bcrypt hash, see step 1','John','Doe',1);
-```
+If the user is successfully added, you can obtain an authentication token by sending a `POST` request to `/auth` with the following information: `username=yourusername&password=yourpassword`.
 
 ## Links
 - [Project website](https://scanbadge.xyz/)

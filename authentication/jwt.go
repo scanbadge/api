@@ -2,13 +2,14 @@ package authentication
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-	"github.com/scanbadge/api/configuration"
-	"github.com/scanbadge/api/endpoint/users"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"github.com/scanbadge/api/configuration"
+	"github.com/scanbadge/api/models"
 )
 
 var loginKey []byte
@@ -60,15 +61,15 @@ func ParseToken(encodedToken string) (*jwt.Token, error) {
 	return nil, fmt.Errorf("invalid token provided")
 }
 
-func generateToken(user users.User) (string, error) {
+func generateToken(user models.User) (string, error) {
 	// Create the token
 	token := jwt.New(jwt.SigningMethodHS256)
 	// Set headers
 	token.Header["kid"] = "login"
 	// Set claims
 	token.Claims["id"] = user.ID
-	token.Claims["name"] = fmt.Sprintf("%s %s", user.Firstname, user.Lastname)
-	token.Claims["admin"] = user.IsAdmin
+	token.Claims["name"] = fmt.Sprintf("%s %s", user.FirstName, user.LastName)
+	//token.Claims["admin"] = user.Roles
 	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	// Sign and get the complete encoded token as a string
 	key, err := lookupKey("login")

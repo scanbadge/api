@@ -40,7 +40,7 @@ func Authenticate(c *gin.Context) {
 	if err == nil && user.Username != "" && user.Password != "" {
 		// TODO: add brute force protection
 		var selectedUser models.User
-		err := configuration.Dbmap.SelectOne(&selectedUser, "select user_username,user_password from users where user_username=?", user.Username)
+		err := configuration.Dbmap.SelectOne(&selectedUser, "select user_id,user_username,user_password,user_first_name,user_last_name from users where user_username=?", user.Username)
 
 		if err == nil && selectedUser.Password != "" {
 			err := bcrypt.CompareHashAndPassword([]byte(selectedUser.Password), []byte(user.Password))

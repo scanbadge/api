@@ -40,25 +40,27 @@ REST API for initiating, maintaining and authenticating [ScanBadge](https://scan
 Yes, we have. Our API is RESTful, so endpoints support `GET`,`PUT`,`POST`,`DELETE` requests. The following endpoints are currently implemented:
 
 - `/auth`<sup>1</sup>
+- `/actions`
+- `/conditions`
 - `/devices`
-- `/logging`
+- `/logs`
 - `/users`
 
-*<sup>1</sup> only `POST` requests supported*
+*<sup>1</sup> only used for [authentication](https://github.com/scanbadge/api#do-you-have-a-list-of-your-api-endpoints)*
 
 See the [API documentation](https://scanbadge.xyz/documentation/api#endpoints) for more detailed information about our endpoints.
 
 ### How do I create the first API user?
 
-Run API with flag `-add-user`, e.g. `$ ./api -add-user`. The following information is required:
+Run API with flag `-add-user`, e.g. `$ ./api -add-user` and follow the on-screen instructions.
 
-1. Username
-- Password
-- Email
-- First name
-- Last name
+If the user is successfully added, you can obtain an authentication token by sending a `POST` request to `/auth` using `multipart/form-data`: `username=foo&password=bar` or use cURL:
 
-If the user is successfully added, you can obtain an authentication token by sending a `POST` request to `/auth` with the following information: `username=yourusername&password=yourpassword`.
+    $ curl --form "username=foo" --form "password=bar" https://api.example.org/auth
+
+If the authentication is successful, a JSON-encoded result with the authentication token will be returned, like so:
+
+    {"token":"eyJhbGciOiJIUzI1NiIsImtpZCI6ImxvZ2luIiwidHlwIjoiSldUIn0.eyJleHAiOjQyOTQ5NjcyOTUsImlkIjoxLCJuYW1lIjoiRm9vIEJhciJ9.5wPuGctuwTb0EqD_ER1dGQQeK2RyIGq64w552_zW-sw"}
 
 ## Links
 - [Project website](https://scanbadge.xyz/)

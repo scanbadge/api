@@ -23,14 +23,14 @@ func addUser() {
 		return
 	}
 
-	password := ""
-	if password, err := gopass.GetPass("Password:\n"); err != nil {
-		if password == "" || len(password) <= 12 || len(password) > 512 {
-			fmt.Println("Password must be at least 12 characters long and cannot exceed 512 characters")
-			return
-		}
-
+	password, err := gopass.GetPass("Password:\n")
+	if err != nil {
 		fmt.Println(err)
+		return
+	}
+
+	if password == "" || len(password) <= 12 || len(password) > 512 {
+		fmt.Println("Password must be at least 12 characters long and cannot exceed 512 characters")
 		return
 	}
 
@@ -58,7 +58,7 @@ func addUser() {
 	}
 
 	// Everything seems to be all right, attempt to insert new user to database.
-	err := configuration.Dbmap.Insert(&user)
+	err = configuration.Dbmap.Insert(&user)
 
 	if err == nil {
 		fmt.Println(fmt.Sprintf("Successfully added new user '%s'", user.Username))

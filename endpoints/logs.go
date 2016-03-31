@@ -10,14 +10,6 @@ import (
 	"github.com/scanbadge/api/models"
 )
 
-// Log describes a log entry. Uses mapping for database and json.
-type Log struct {
-	ID      int64  `db:"id" json:"id"`
-	UserID  int64  `db:"user_id" json:"user_id"`
-	Message string `db:"message" json:"message"`
-	Origin  string `db:"origin" json:"origin"`
-}
-
 // GetLogs gets all devices.
 func GetLogs(c *gin.Context) {
 	var logs []models.Log
@@ -28,6 +20,7 @@ func GetLogs(c *gin.Context) {
 
 		if err == nil && len(logs) > 0 {
 			showResult(c, 200, logs)
+			return
 		}
 	}
 
@@ -46,16 +39,16 @@ func GetLog(c *gin.Context) {
 			err := configuration.Dbmap.SelectOne(&log, "select * from logs where id=? and user_id=?", id, uid)
 
 			if err == nil {
-				c.JSON(200, log)
-			} else {
-				c.JSON(404, gin.H{"error": "log entry not found"})
+				showResult(c, 200, log)
+				return
 			}
-		} else {
-			c.JSON(404, gin.H{"error": "log entry not found"})
 		}
-	} else {
-		c.JSON(422, gin.H{"error": "no log entry identifier provided"})
+
+		showError(c, 404, fmt.Errorf("log entry not found"))
+		return
 	}
+
+	showError(c, 422, fmt.Errorf("no log entry identifier provided"))
 }
 
 // AddLog adds a new log entry for the current user.
@@ -73,13 +66,16 @@ func AddLog(c *gin.Context) {
 
 				if err == nil {
 					showResult(c, 201, log)
+					return
 				}
 			}
 
 			showError(c, 400, fmt.Errorf("adding new log entry failed"))
+			return
 		}
 
 		showError(c, 422, fmt.Errorf("field(s) are empty"))
+		return
 	}
 
 	showError(c, 400, fmt.Errorf("adding new log entry failed"))
@@ -87,7 +83,7 @@ func AddLog(c *gin.Context) {
 
 // UpdateLog updates a device based on the identifer.
 func UpdateLog(c *gin.Context) {
-	c.JSON(403, gin.H{"error": "PUT /logs is not supported yet"})
+	showError(c, 403, fmt.Errorf("PUT /logs is not supported"))
 }
 
 // DeleteLog deletes a device based on the identifier.
@@ -107,11 +103,13 @@ func DeleteLog(c *gin.Context) {
 
 				if err == nil && count == 1 {
 					showSucces(c, fmt.Sprintf("log entry with id %s is deleted", id))
+					return
 				}
 			}
 		}
 
 		showError(c, 400, fmt.Errorf("deleting log entry failed"))
+		return
 	}
 
 	showError(c, 400, fmt.Errorf("deleting log entry failed due to missing identifier"))

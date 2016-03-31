@@ -6,8 +6,8 @@ type Action struct {
 	Name        string     `db:"action_name" json:"action_name" form:"name"`
 	Description string     `db:"action_description" json:"action_description" form:"description"`
 	Value       string     `db:"action_value" json:"action_value" form:"value"`
-	Device      Device     `json:"device"`
-	Type        ActionType `json:"action_type"`
+	Device      Device     `db:"-" json:"device"`
+	Type        ActionType `db:"-" json:"action_type"`
 }
 
 // ActionType describes an action type. The action type can be used to determine what driver to use when the action is performed.
@@ -23,9 +23,9 @@ type Condition struct {
 	Name        string        `db:"condition_name" json:"name" form:"name"`
 	Description string        `db:"condition_description" json:"description" form:"description"`
 	Value       string        `db:"condition_value" json:"value" form:"value"`
-	Action      Action        `json:"action"`
-	Device      Device        `json:"device"`
-	Type        ConditionType `json:"condition_type"`
+	Action      Action        `db:"-" json:"action"`
+	Device      Device        `db:"-" json:"device"`
+	Type        ConditionType `db:"-" json:"condition_type"`
 }
 
 // ConditionType describes a condition type.
@@ -44,7 +44,7 @@ type Device struct {
 	Name        string `db:"device_name" json:"name" form:"name"`
 	Description string `db:"device_description" json:"description" form:"description"`
 	Key         string `db:"device_key" json:"key" form:"key"`
-	User        User   `json:"user"`
+	User        User   `db:"-" json:"user"`
 }
 
 // Log describes a log entry.
@@ -56,7 +56,7 @@ type Log struct {
 	Description string `db:"log_message" json:"message" form:"message"`
 	Origin      string `db:"log_origin" json:"origin" form:"origin"`
 	Object      string `db:"log_object" json:"object" form:"object"`
-	User        User   `json:"user"`
+	User        User   `db:"-" json:"user"`
 }
 
 // User describes a user.
@@ -67,20 +67,13 @@ type User struct {
 	Password  string `db:"user_password" json:"password,omitempty" form:"password"`
 	FirstName string `db:"user_first_name" json:"first_name" form:"first_name"`
 	LastName  string `db:"user_last_name" json:"last_name" form:"last_name"`
-	Roles     []Role `db:"-" json:"roles"`
+	Roles     Role   `db:"-" json:"roles,omitempty"`
 }
 
 // Role describes a user role.
 type Role struct {
-	ID          int64     `db:"role_id" json:"id"`
-	Name        string    `db:"role_name" json:"name"`
-	Description string    `db:"role_description" json:"description"`
-	Level       RoleLevel `json:"role_level"`
-}
-
-// RoleLevel describes a user role level. The role level can be used to whitelist users for specific API actions.
-type RoleLevel struct {
-	ID          int64  `db:"role_level_id" json:"id"`
-	Name        string `db:"role_level_name" json:"name"`
-	Description string `db:"role_level_description" json:"description"`
+	ID          int64  `db:"role_id" json:"id"`
+	Level       int64  `db:"role_Level" json:"level"`
+	Name        string `db:"role_name" json:"name"`
+	Description string `db:"role_description" json:"description"`
 }

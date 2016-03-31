@@ -30,10 +30,10 @@ func DecodeBase64(encoded []byte) ([]byte, error) {
 	return decoded, nil
 }
 
-// HashPassword hashes a password with the bcrypt algorithm using a cost of 10.
+// HashPassword hashes a password with the bcrypt algorithm using a cost factor of 2^12.
 func HashPassword(password string) string {
-	// Hashing the password with the default cost of 10
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	// Hashing the password with a cost factor of 2^12.
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 
 	if err != nil {
 		panic(err)

@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql" // implement MySQL driver
@@ -20,9 +21,11 @@ func GetDevices(c *gin.Context) {
 
 		if err == nil && len(devices) > 0 {
 			showResult(c, 200, devices)
+			return
 		}
 	}
 
+	log.Println(err)
 	showError(c, 404, fmt.Errorf("device(s) not found"))
 }
 
@@ -39,10 +42,13 @@ func GetDevice(c *gin.Context) {
 
 			if err == nil {
 				showResult(c, 200, device)
+				return
 			}
 		}
 
+		log.Println(err)
 		showError(c, 404, fmt.Errorf("device not found"))
+		return
 	}
 
 	showError(c, 422, fmt.Errorf("no identifier provided"))
@@ -54,35 +60,33 @@ func AddDevice(c *gin.Context) {
 
 	err := c.Bind(&device)
 
-	if err == nil {
-		if device.Description != "" && device.Key != "" && device.Name != "" {
-			userID, err := authentication.GetUserID(c)
+	if err == nil && device.Description != "" && device.Key != "" && device.Name != "" {
+		userID, err := authentication.GetUserID(c)
+
+		if err == nil {
+			device.UserID = userID
+
+			err := configuration.Dbmap.Insert(&device)
 
 			if err == nil {
-				device.UserID = userID
-
-				err := configuration.Dbmap.Insert(&device)
-
-				if err == nil {
-					showResult(c, 201, device)
-				}
+				showResult(c, 201, device)
+				return
 			}
-
-			showError(c, 400, fmt.Errorf("adding new device failed"))
 		}
 
-		showError(c, 422, fmt.Errorf("field(s) are empty"))
+		showError(c, 400, fmt.Errorf("adding new device failed"))
+		return
 	}
 
-	showError(c, 400, fmt.Errorf("adding new device failed"))
+	showError(c, 422, fmt.Errorf("field(s) are empty"))
 }
 
 // UpdateDevice updates a device based on the identifer.
 func UpdateDevice(c *gin.Context) {
-	c.JSON(403, gin.H{"error": "PUT is not supported"})
+	showError(c, 403, fmt.Errorf("PUT /devices is not supported"))
 }
 
 // DeleteDevice deletes a device based on the identifier.
 func DeleteDevice(c *gin.Context) {
-	c.JSON(403, gin.H{"error": "DELETE is not supported"})
+	showError(c, 403, fmt.Errorf("DELETE /devices is not supported"))
 }

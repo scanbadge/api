@@ -16,7 +16,7 @@ type Action struct {
 type ActionType struct {
 	ID          int64  `db:"action_type_id" json:"id"`
 	Name        string `db:"action_type_name" json:"name" form:"name"`
-	Description string `db:"action_type_sgdescription" json:"description" form:"description"`
+	Description string `db:"action_type_gdescription" json:"description" form:"description"`
 }
 
 // Condition describes a condition. When a condition evaluates to TRUE, the related action should be performed.

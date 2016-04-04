@@ -3,6 +3,8 @@ package models
 // Action describes an action that the ScanBadge client performs, based on the result of the specified condition.
 type Action struct {
 	ID          int64      `db:"action_id" json:"action_id"`
+	UserID      int64      `db:"user_id" json:"user_id"`
+	DeviceID    int64      `db:"device_id" json:"device_id"`
 	Name        string     `db:"action_name" json:"action_name" form:"name"`
 	Description string     `db:"action_description" json:"action_description" form:"description"`
 	Value       string     `db:"action_value" json:"action_value" form:"value"`
@@ -14,12 +16,14 @@ type Action struct {
 type ActionType struct {
 	ID          int64  `db:"action_type_id" json:"id"`
 	Name        string `db:"action_type_name" json:"name" form:"name"`
-	Description string `db:"action_type_description" json:"description" form:"description"`
+	Description string `db:"action_type_sgdescription" json:"description" form:"description"`
 }
 
 // Condition describes a condition. When a condition evaluates to TRUE, the related action should be performed.
 type Condition struct {
 	ID          int64         `db:"condition_id" json:"id"`
+	UserID      int64         `db:"user_id" json:"user_id"`
+	DeviceID    int64         `db:"device_id" json:"device_id"`
 	Name        string        `db:"condition_name" json:"name" form:"name"`
 	Description string        `db:"condition_description" json:"description" form:"description"`
 	Value       string        `db:"condition_value" json:"value" form:"value"`
@@ -34,6 +38,11 @@ type ConditionType struct {
 	Name        string `db:"condition_type_name" json:"name" form:"name"`
 	Description string `db:"condition_type_description" json:"description" form:"description"`
 	ExecuteArgs string `db:"condition_type_execute_args" json:"execute_args" form:"execute_args"`
+}
+
+type Count struct {
+	Endpoint string `json:"endpoint"`
+	Count    int64  `json:"count"`
 }
 
 // Device describes a device.

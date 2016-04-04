@@ -36,7 +36,9 @@ func main() {
 	}
 
 	if adduser {
-		addUser()
+		if !addUser() {
+			return
+		}
 	}
 
 	router := gin.New()
@@ -56,6 +58,9 @@ func main() {
 		authorized.POST("/conditions", endpoints.AddCondition)
 		authorized.PUT("/conditions/:id", endpoints.UpdateCondition)
 		authorized.DELETE("/conditions/:id", endpoints.DeleteCondition)
+
+		authorized.GET("/count", endpoints.GetAllCount)
+		authorized.GET("/count/:id", endpoints.GetCount)
 
 		authorized.GET("/devices", endpoints.GetDevices)
 		authorized.GET("/devices/:id", endpoints.GetDevice)

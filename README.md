@@ -1,7 +1,7 @@
 # ScanBadge API
 REST API for initiating, maintaining and authenticating [ScanBadge](https://scanbadge.xyz/discover), written in Go.
 
-[![GoDoc](https://godoc.org/github.com/ScanBadge/api/endpoints?status.svg)](https://godoc.org/github.com/ScanBadge/api/endpoints)
+[![GoDoc](https://godoc.org/github.com/ScanBadge/api?status.svg)](https://godoc.org/github.com/ScanBadge/api)
 
 ## Setup
 

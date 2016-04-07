@@ -44,6 +44,7 @@ func main() {
 	router := gin.New()
 
 	router.POST("/auth", authentication.Authenticate)
+	router.Use(CORSMiddleware())
 
 	authorized := router.Group("/", authentication.AuthRequired())
 	{
@@ -128,4 +129,35 @@ func initDb() *gorp.DbMap {
 	}
 
 	return Dbmap
+}
+
+// CORSMiddleware is middleware that sets several Access-Control headers to allow increased security.
+// The following headers are set (with default values):
+// Access-Control-Allow-Origin: * OR <config.json `AllowedOrigins` value>
+// Access-Control-Max-Age: 86400
+// Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE, UPDATE
+// Access-Control-Allow-Headers: Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization
+// Access-Control-Expose-Headers: Content-Length
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		origin := configuration.Config.AllowedOrigins
+
+		if debug || origin == "" {
+			origin = "*"
+		}
+
+		c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Length")
+
+		if c.Request.Method == "OPTIONS" {
+			fmt.Println("OPTIONS")
+			c.AbortWithStatus(200)
+		} else {
+			c.Next()
+		}
+	}
 }

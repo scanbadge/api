@@ -2,14 +2,15 @@ package models
 
 // Action describes an action that the ScanBadge client performs, based on the result of the specified condition.
 type Action struct {
-	ID          int64      `db:"action_id" json:"action_id"`
-	UserID      int64      `db:"user_id" json:"user_id"`
-	DeviceID    int64      `db:"device_id" json:"device_id"`
-	Name        string     `db:"action_name" json:"action_name" form:"name"`
-	Description string     `db:"action_description" json:"action_description" form:"description"`
-	Value       string     `db:"action_value" json:"action_value" form:"value"`
-	Device      Device     `db:"-" json:"device"`
-	Type        ActionType `db:"-" json:"action_type"`
+	ID           int64      `db:"action_id" json:"action_id"`
+	UserID       int64      `db:"user_id" json:"user_id"`
+	DeviceID     int64      `db:"device_id" json:"device_id"`
+	ActionTypeID int64      `db:"action_type_id" json:"action_type_id"`
+	Name         string     `db:"action_name" json:"action_name" form:"name"`
+	Description  string     `db:"action_description" json:"action_description" form:"description"`
+	Value        string     `db:"action_value" json:"action_value" form:"value"`
+	Device       Device     `db:"-" json:"device"`
+	Type         ActionType `db:"-" json:"action_type"`
 }
 
 // ActionType describes an action type. The action type can be used to determine what driver to use when the action is performed.

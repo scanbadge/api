@@ -24,7 +24,7 @@ func GetLogs(c *gin.Context) {
 		}
 	}
 
-	showError(c, 404, fmt.Errorf("no log entries found"))
+	showError(c, 404, fmt.Errorf("log entries not found"))
 }
 
 // GetLog gets a device based on the provided identifier.
@@ -48,7 +48,7 @@ func GetLog(c *gin.Context) {
 		return
 	}
 
-	showError(c, 422, fmt.Errorf("no log entry identifier provided"))
+	showError(c, 422, fmt.Errorf("log entry identifier not provided"))
 }
 
 // AddLog adds a new log entry for the current user.

@@ -20,10 +20,11 @@ var Dbmap *gorp.DbMap
 
 // Configuration stores the main configuration for the application.
 type Configuration struct {
-	ServerHost string // The hostname on which the HTTP server will run, e.g. 'localhost'.
-	ServerPort int    // The port on which the HTTP server will run, e.g. '8080'.
-	Key        string // The relative path of the base64-encoded key used for signing JWT. Recommended size of key: 256 bits.
-	Database   MySQLConfiguration
+	ServerHost     string // The hostname on which the HTTP server will run, e.g. 'localhost'.
+	ServerPort     int    // The port on which the HTTP server will run, e.g. '8080'.
+	Key            string // The relative path of the base64-encoded key used for signing JWT. Recommended size of key: 256 bits.
+	AllowedOrigins string // The origin on which requests should be allowed from.
+	Database       MySQLConfiguration
 }
 
 // MySQLConfiguration stores the specific MySQL configuration for this application.

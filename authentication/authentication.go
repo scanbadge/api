@@ -17,7 +17,7 @@ func AuthRequired() gin.HandlerFunc {
 		var encodedToken = c.Request.Header.Get("Authorization")
 
 		parsedToken, err := ParseToken(encodedToken)
-		if err == nil {
+		if err == nil && parsedToken != nil {
 			if parsedToken.Valid {
 				// Authentication is OK, proceed.
 				c.Next()
